@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Scalars",
+  "$defs": {
+    "Scalars": {
+      "type": "object",
+      "properties": {
+        "s": {
+          "type": "string"
+        },
+        "n": {
+          "type": "number"
+        },
+        "i": {
+          "type": "integer"
+        },
+        "b": {
+          "type": "boolean"
+        },
+        "nothing": {
+          "type": "null"
+        },
+        "lit_str": {
+          "const": "hello"
+        },
+        "lit_num": {
+          "const": 42
+        },
+        "lit_neg": {
+          "const": -1.5
+        }
+      },
+      "required": [
+        "s",
+        "n",
+        "i",
+        "b",
+        "nothing",
+        "lit_str",
+        "lit_num",
+        "lit_neg"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

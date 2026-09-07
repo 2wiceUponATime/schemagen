@@ -1,0 +1,32 @@
+/// A box holding any value.
+Box<T> = { value: T };
+
+/// A person record.
+/// Used throughout the examples.
+Person = {
+    name: string;
+
+    /**
+     * The person's age in years.
+     * Must be non-negative.
+     */
+    age: integer;
+};
+
+/// This description loses to the explicit one.
+Labeled = string with { description: "explicit wins" };
+
+/// Separated by a blank line below, so NOT attached.
+
+Detached = { x: string };
+
+Root = {
+    a: Box<string>;
+    b: Box<integer>;
+    person: Person;
+    labeled: Labeled;
+    detached: Detached;
+};
+
+/// The root of the whole schema.
+export Root;

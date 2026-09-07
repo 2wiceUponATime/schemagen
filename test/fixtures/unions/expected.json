@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Both",
+  "$defs": {
+    "Both": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/Status"
+        },
+        "mixed": {
+          "$ref": "#/$defs/Mixed"
+        },
+        "redundant": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "mixed",
+        "redundant"
+      ],
+      "additionalProperties": false
+    },
+    "Mixed": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "const": 42
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "const": "obj"
+            }
+          },
+          "required": [
+            "tag"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Status": {
+      "enum": [
+        "open",
+        "closed",
+        "pending"
+      ]
+    }
+  }
+}

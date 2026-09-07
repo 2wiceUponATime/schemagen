@@ -1,0 +1,11 @@
+Email = string with { format: "email"; description: "an email address" };
+
+Age = integer with { minimum: 0 } with { maximum: 150 };
+
+Person = {
+    email: Email;
+    age: Age;
+    tags: string[] with { minItems: 1 };
+} with { title: "Person"; additionalProperties: true };
+
+export Person;

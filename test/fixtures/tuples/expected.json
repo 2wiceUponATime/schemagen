@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Bundle",
+  "$defs": {
+    "Bundle": {
+      "type": "object",
+      "properties": {
+        "fixed": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "items": false,
+          "minItems": 2
+        },
+        "trailingRest": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2
+        },
+        "restOnly": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "empty": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "nested": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "items": false,
+            "minItems": 2
+          }
+        }
+      },
+      "required": [
+        "fixed",
+        "trailingRest",
+        "restOnly",
+        "empty",
+        "nested"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

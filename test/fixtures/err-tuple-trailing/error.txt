@@ -1,0 +1,1 @@
+elements after a `...rest` element are not supported

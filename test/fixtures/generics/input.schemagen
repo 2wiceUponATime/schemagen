@@ -1,0 +1,12 @@
+Box<T> = { value: T; set: boolean };
+
+Pair<A, B> = { first: A; second: B };
+
+Root = {
+    a: Box<string>;
+    b: Box<string>;
+    c: Box<integer>;
+    d: Pair<string, Box<integer>>;
+};
+
+export Root;

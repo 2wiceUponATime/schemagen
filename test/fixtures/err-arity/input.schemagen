@@ -1,0 +1,3 @@
+Box<T> = { value: T };
+
+export { boxed: Box };

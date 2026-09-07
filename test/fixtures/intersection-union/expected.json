@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Combined",
+  "$defs": {
+    "Base": {
+      "type": "object",
+      "properties": {
+        "shared": {
+          "type": "integer"
+        },
+        "meta": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "shared"
+      ],
+      "additionalProperties": false
+    },
+    "Combined": {
+      "type": "object",
+      "properties": {
+        "shared": {
+          "type": "integer"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "a",
+            "b"
+          ]
+        },
+        "only_a": {
+          "type": "string"
+        },
+        "common": {
+          "type": "boolean"
+        },
+        "only_b": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "shared",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "VariantA": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "a"
+        },
+        "only_a": {
+          "type": "string"
+        },
+        "common": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "only_a",
+        "common"
+      ],
+      "additionalProperties": false
+    },
+    "VariantB": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "b"
+        },
+        "only_b": {
+          "type": "string"
+        },
+        "common": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "only_b"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

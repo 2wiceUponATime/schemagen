@@ -1,0 +1,14 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Generate Parser",
+            "type": "shell",
+            "command": "ANTLR4_TOOLS_ANTLR_VERSION=4.13.2 antlr4 Program.g4 -Dlanguage=TypeScript && echo \"Successfully generated parser\"",
+            "options": {
+                "cwd": "${workspaceFolder}/src/parser"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

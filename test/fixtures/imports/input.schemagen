@@ -1,0 +1,10 @@
+import { Point, Point as P2 } from "./shapes.schemagen";
+import Meta from "./shapes.schemagen";
+
+Segment = {
+    head: Point;
+    tail: P2;
+    meta: Meta;
+};
+
+export Segment;

@@ -1,0 +1,3 @@
+Known = { a: string };
+
+export { wrapped: Nonexistent };

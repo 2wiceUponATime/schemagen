@@ -1,0 +1,8 @@
+Base = { shared: integer; meta?: string };
+
+VariantA = { kind: "a"; only_a: string; common: boolean };
+VariantB = { kind: "b"; only_b: string; common?: boolean };
+
+Combined = Base & (VariantA | VariantB);
+
+export Combined;

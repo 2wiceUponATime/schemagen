@@ -1,0 +1,8 @@
+Config = {
+    name: string;
+    description?: string;
+    "quoted-key": integer;
+    [rest]: boolean;
+};
+
+export Config;

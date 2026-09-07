@@ -1,0 +1,3 @@
+Obj = { a: string; b: integer };
+
+export keyof Obj;

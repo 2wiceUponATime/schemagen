@@ -1,0 +1,11 @@
+Status = "open" | "closed" | "pending";
+
+Mixed = string | 42 | { tag: "obj" };
+
+Both = {
+    status: Status;
+    mixed: Mixed;
+    redundant: string | string | number;
+};
+
+export Both;

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Tree",
+  "$defs": {
+    "Tree": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Tree"
+          }
+        },
+        "parent": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tree"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "children",
+        "parent"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

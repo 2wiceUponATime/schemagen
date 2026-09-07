@@ -1,0 +1,12 @@
+Scalars = {
+    s: string;
+    n: number;
+    i: integer;
+    b: boolean;
+    nothing: null;
+    lit_str: "hello";
+    lit_num: 42;
+    lit_neg: -1.5;
+};
+
+export Scalars;

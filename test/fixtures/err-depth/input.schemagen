@@ -1,0 +1,3 @@
+Rec<T> = { next: Rec<Rec<T>> };
+
+export Rec<integer>;

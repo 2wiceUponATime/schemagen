@@ -1,0 +1,9 @@
+Named = { name: string; id: integer };
+
+Timestamped = { id: integer; createdAt: string; updatedAt?: string };
+
+Extra = { name?: string; note: string; [rest]: string };
+
+Record = Named & Timestamped & Extra;
+
+export Record;

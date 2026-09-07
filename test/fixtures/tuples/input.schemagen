@@ -1,0 +1,9 @@
+Bundle = {
+    fixed: [string, integer];
+    trailingRest: [string, boolean, ...integer];
+    restOnly: [...string];
+    empty: [];
+    nested: [string, integer][];
+};
+
+export Bundle;

@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/default",
+  "$defs": {
+    "Box": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "additionalProperties": false,
+      "description": "A box holding any value."
+    },
+    "Box_2": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "additionalProperties": false,
+      "description": "A box holding any value."
+    },
+    "Detached": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "x"
+      ],
+      "additionalProperties": false
+    },
+    "Labeled": {
+      "type": "string",
+      "description": "explicit wins"
+    },
+    "Person": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "age": {
+          "type": "integer",
+          "description": "The person's age in years.\nMust be non-negative."
+        }
+      },
+      "required": [
+        "name",
+        "age"
+      ],
+      "additionalProperties": false,
+      "description": "A person record.\nUsed throughout the examples."
+    },
+    "Root": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "$ref": "#/$defs/Box"
+        },
+        "b": {
+          "$ref": "#/$defs/Box_2"
+        },
+        "person": {
+          "$ref": "#/$defs/Person"
+        },
+        "labeled": {
+          "$ref": "#/$defs/Labeled"
+        },
+        "detached": {
+          "$ref": "#/$defs/Detached"
+        }
+      },
+      "required": [
+        "a",
+        "b",
+        "person",
+        "labeled",
+        "detached"
+      ],
+      "additionalProperties": false
+    },
+    "default": {
+      "$ref": "#/$defs/Root",
+      "description": "The root of the whole schema."
+    }
+  }
+}

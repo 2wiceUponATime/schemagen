@@ -1,0 +1,1 @@
+a tuple may have at most one `...rest` element

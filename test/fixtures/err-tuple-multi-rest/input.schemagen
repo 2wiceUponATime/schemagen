@@ -1,0 +1,3 @@
+Bad = [...string, ...integer];
+
+export Bad;

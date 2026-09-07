@@ -1,0 +1,7 @@
+Tree = {
+    value: integer;
+    children: Tree[];
+    parent: Tree | null;
+};
+
+export Tree;

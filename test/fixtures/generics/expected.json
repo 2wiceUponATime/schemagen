@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Root",
+  "$defs": {
+    "Box": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "set": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "value",
+        "set"
+      ],
+      "additionalProperties": false
+    },
+    "Box_2": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer"
+        },
+        "set": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "value",
+        "set"
+      ],
+      "additionalProperties": false
+    },
+    "Pair": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "string"
+        },
+        "second": {
+          "$ref": "#/$defs/Box_2"
+        }
+      },
+      "required": [
+        "first",
+        "second"
+      ],
+      "additionalProperties": false
+    },
+    "Root": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "$ref": "#/$defs/Box"
+        },
+        "b": {
+          "$ref": "#/$defs/Box"
+        },
+        "c": {
+          "$ref": "#/$defs/Box_2"
+        },
+        "d": {
+          "$ref": "#/$defs/Pair"
+        }
+      },
+      "required": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
