@@ -1,0 +1,1 @@
+cannot index string by property name

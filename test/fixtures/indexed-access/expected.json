@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Root",
+  "$defs": {
+    "Dict": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "Obj": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "string"
+        },
+        "b": {
+          "type": "integer"
+        },
+        "c": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "a",
+        "b",
+        "c"
+      ],
+      "additionalProperties": false
+    },
+    "Root": {
+      "type": "object",
+      "properties": {
+        "byLiteral": {
+          "type": "string"
+        },
+        "byMember": {
+          "type": "integer"
+        },
+        "byKeyof": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "byUnionKey": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ]
+        },
+        "tupleSlot": {
+          "type": "integer"
+        },
+        "tupleAny": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "listElem": {
+          "type": "string"
+        },
+        "dictFallback": {
+          "type": "integer"
+        },
+        "dictString": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "byLiteral",
+        "byMember",
+        "byKeyof",
+        "byUnionKey",
+        "tupleSlot",
+        "tupleAny",
+        "listElem",
+        "dictFallback",
+        "dictString"
+      ],
+      "additionalProperties": false
+    },
+    "Tuple": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        }
+      ],
+      "items": false,
+      "minItems": 3
+    }
+  }
+}

@@ -1,0 +1,1 @@
+a mapped type source must be a finite set of string literals

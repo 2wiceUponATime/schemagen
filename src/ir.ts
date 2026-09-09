@@ -66,6 +66,13 @@ export interface ObjectEntry {
     optional: boolean;
 }
 
+/** One `[k matches R]: V` clause. `pattern` is the already-resolved regex
+ *  source (a plain string); emitted as one `patternProperties` entry. */
+export interface PatternEntry {
+    pattern: string;
+    type: Type;
+}
+
 export interface ObjectType extends TypeBase {
     kind: "object";
     /** In declaration order. */
@@ -73,6 +80,9 @@ export interface ObjectType extends TypeBase {
     /** Value type of a bare index signature `[k]: V`, or null. Emitted as
      *  `additionalProperties`. */
     indexValue: Type | null;
+    /** `[k matches R]: V` clauses, in declaration order. Emitted as
+     *  `patternProperties`. */
+    patternEntries: PatternEntry[];
 }
 
 export type Type =

@@ -50,6 +50,7 @@ import {
     JSONValue,
     ObjectEntry,
     ObjectType,
+    PatternEntry,
     PrimitiveType,
     RefType,
     Type,
@@ -61,6 +62,37 @@ import { parseString, SchemagenError } from "./utils";
 
 /** Bindings for a definition's generic parameters while its body is walked. */
 type Env = Map<string, Type>;
+
+/**
+ * Transient result of resolving `expand T`: the members of the union `T`
+ * denotes, waiting to be distributed across the nearest enclosing *frame* (an
+ * operand of `&`, or a type-argument slot). It never reaches a {@link Def}
+ * body — a frame consumes it, or {@link SchemaBuilder.resolveType} rejects it.
+ *
+ * `fromUnion` records whether a real union was seen: `expand X` where `X` is a
+ * lone non-union type yields `fromUnion: false`, and a frame that meets such a
+ * value errors ("`expand` requires a union") rather than acting as a no-op.
+ */
+interface Distributable {
+    kind: "distributable";
+    members: Type[];
+    fromUnion: boolean;
+}
+
+/** A resolved type, or an unconsumed {@link Distributable}. */
+type Resolved = Type | Distributable;
+
+function isDistributable(r: Resolved): r is Distributable {
+    return r.kind === "distributable";
+}
+
+/** `[[a, b], [c]]` -> `[[a, c], [b, c]]`; `[]` -> `[[]]`. */
+function cartesianProduct<T>(lists: T[][]): T[][] {
+    return lists.reduce<T[][]>(
+        (acc, list) => acc.flatMap((combo) => list.map((item) => [...combo, item])),
+        [[]]
+    );
+}
 
 /** Guard against a single `(file, symbol)` diverging under generic
  *  instantiation (`Rec<T> = { x: Rec<Rec<T>> }`). */
@@ -220,6 +252,10 @@ export class SchemaBuilder {
                         type: this.canon(e.type),
                     })),
                     x: t.indexValue ? this.canon(t.indexValue) : null,
+                    pp: t.patternEntries.map((pe) => ({
+                        pattern: pe.pattern,
+                        type: this.canon(pe.type),
+                    })),
                     w: t.with,
                 };
         }
@@ -235,7 +271,33 @@ export class SchemaBuilder {
 
     // ---- the type walk -----------------------------------------------------
 
+    /**
+     * Resolve one `type` node to a concrete {@link Type}. This is the strict
+     * entry point: a `Distributable` reaching here means an `expand` sat
+     * somewhere it cannot be consumed, which is an error.
+     */
     private resolveType(ctx: TypeContext, file: string, env: Env): Type {
+        const r = this.resolveInner(ctx, file, env);
+        if (isDistributable(r)) {
+            throw this.fail(
+                r.fromUnion
+                    ? "`expand` has no effect here; it may only qualify an operand of `&` or a type argument"
+                    : "`expand` requires a union",
+                file,
+                ctx.start
+            );
+        }
+        return r;
+    }
+
+    /**
+     * The type walk. Returns a {@link Distributable} for `expand` (and for a
+     * union or `(...)` that wraps one); every other node collapses to a
+     * {@link Type}. The three frames — `&` operands, generic-argument slots,
+     * and `expand`'s own union detection — call this directly; everyone else
+     * goes through {@link resolveType}.
+     */
+    private resolveInner(ctx: TypeContext, file: string, env: Env): Resolved {
         if (ctx instanceof PrimitiveContext) {
             return {
                 kind: "primitive",
@@ -250,7 +312,8 @@ export class SchemaBuilder {
             return { kind: "literal", value: parseString(ctx._val.text), with: {} };
         }
         if (ctx instanceof ParensContext) {
-            return this.resolveType(ctx.type_(), file, env);
+            // Transparent: a parenthesised `expand` still feeds an outer frame.
+            return this.resolveInner(ctx.type_(), file, env);
         }
         if (ctx instanceof ListContext) {
             return {
@@ -269,18 +332,28 @@ export class SchemaBuilder {
             return withBag(base, this.jsonObject(ctx.json_object()));
         }
         if (ctx instanceof UnionContext) {
-            return this.normalizeUnion([
-                this.resolveType(ctx._l, file, env),
-                this.resolveType(ctx._r, file, env),
-            ]);
+            const l = this.resolveInner(ctx._l, file, env);
+            const r = this.resolveInner(ctx._r, file, env);
+            if (isDistributable(l) || isDistributable(r)) {
+                // `expand X | Y` — the whole union is the distribution set.
+                return {
+                    kind: "distributable",
+                    members: [
+                        ...(isDistributable(l) ? l.members : [l]),
+                        ...(isDistributable(r) ? r.members : [r]),
+                    ],
+                    fromUnion: true,
+                };
+            }
+            return this.normalizeUnion([l, r]);
         }
         if (ctx instanceof IntersectionContext) {
-            return this.intersect(
-                this.resolveType(ctx._l, file, env),
-                this.resolveType(ctx._r, file, env),
-                ctx.start,
-                file
-            );
+            const l = this.resolveInner(ctx._l, file, env);
+            const r = this.resolveInner(ctx._r, file, env);
+            if (isDistributable(l) || isDistributable(r)) {
+                return this.distributeIntersection(l, r, ctx.start, file);
+            }
+            return this.intersect(l, r, ctx.start, file);
         }
         if (ctx instanceof ObjectContext) {
             return this.resolveObject(ctx, file, env);
@@ -289,23 +362,247 @@ export class SchemaBuilder {
             return this.resolveNamed(ctx, file, env);
         }
         if (ctx instanceof ExpandContext) {
-            throw this.fail("`expand` is not supported", file, ctx.start);
+            return this.resolveExpand(ctx, file, env);
         }
         if (ctx instanceof KeyofContext) {
-            throw this.fail("`keyof` is not supported", file, ctx.start);
+            return this.resolveKeyof(
+                this.resolveType(ctx.type_(), file, env),
+                ctx.start,
+                file
+            );
         }
         if (ctx instanceof IndexContext) {
-            throw this.fail("indexed access `T[K]` is not supported", file, ctx.start);
+            return this.resolveIndex(
+                this.resolveType(ctx._val, file, env),
+                this.resolveType(ctx._key, file, env),
+                ctx.start,
+                file
+            );
         }
         if (ctx instanceof SubscriptContext) {
-            throw this.fail("member access `T.x` is not supported", file, ctx.start);
+            return this.resolveIndex(
+                this.resolveType(ctx.type_(), file, env),
+                { kind: "literal", value: ctx._member.text, with: {} },
+                ctx.start,
+                file
+            );
         }
         throw this.fail("unsupported type syntax", file, ctx.start);
     }
 
+    // ---- `expand` distribution -------------------------------------------
+
+    private resolveExpand(
+        ctx: ExpandContext,
+        file: string,
+        env: Env
+    ): Distributable {
+        const operand = this.resolveType(ctx.type_(), file, env);
+        const seen = this.throughRefs(operand, ctx.start, file);
+        if (seen.kind === "union") {
+            if (!isEmptyObject(seen.with)) {
+                throw this.fail(
+                    "`expand` requires a plain union operand; move the `with` clause onto the members or the result",
+                    file,
+                    ctx.start
+                );
+            }
+            return { kind: "distributable", members: seen.members, fromUnion: true };
+        }
+        // Not a union yet — only an enclosing `X | Y` can rescue it.
+        return { kind: "distributable", members: [operand], fromUnion: false };
+    }
+
+    /** Members a frame operand contributes; a lone `expand <non-union>` here
+     *  is the error the spec calls for rather than a silent pass-through. */
+    private frameMembers(r: Resolved, tok: Token, file: string): Type[] {
+        if (!isDistributable(r)) return [r];
+        if (!r.fromUnion) {
+            throw this.fail("`expand` requires a union", file, tok);
+        }
+        return r.members;
+    }
+
+    private distributeIntersection(
+        l: Resolved,
+        r: Resolved,
+        tok: Token,
+        file: string
+    ): Type {
+        const out: Type[] = [];
+        for (const a of this.frameMembers(l, tok, file)) {
+            for (const b of this.frameMembers(r, tok, file)) {
+                out.push(this.intersect(a, b, tok, file));
+            }
+        }
+        return this.normalizeUnion(out);
+    }
+
+    /** Chase a chain of bare `ref`s to the type they ultimately denote, using
+     *  the shared eager-resolution guard so cycles fail cleanly. */
+    private throughRefs(t: Type, tok: Token, file: string): Type {
+        let cur = t;
+        while (cur.kind === "ref") cur = this.bodyOf(cur, tok, file);
+        return cur;
+    }
+
+    // ---- `keyof` -------------------------------------------------------
+
+    /**
+     * `keyof T` — the set of keys `T` allows, as a string-literal union.
+     * An index signature or pattern property makes the set open, so the
+     * result is `string`; `keyof` of a union is the keys common to every
+     * member; anything that is not an object is an error.
+     */
+    private resolveKeyof(t: Type, tok: Token, file: string): Type {
+        const keys = this.keyNamesOf(t, tok, file);
+        if (keys === "open") {
+            return { kind: "primitive", value: "string", with: {} };
+        }
+        if (keys.length === 0) {
+            throw this.fail("`keyof` of an object type with no known keys", file, tok);
+        }
+        return this.normalizeUnion(
+            keys.map((k) => ({ kind: "literal", value: k, with: {} }))
+        );
+    }
+
+    private keyNamesOf(
+        t: Type,
+        tok: Token,
+        file: string
+    ): string[] | "open" {
+        const resolved = this.throughRefs(t, tok, file);
+        if (resolved.kind === "object") {
+            if (resolved.indexValue || resolved.patternEntries.length > 0) {
+                return "open";
+            }
+            return resolved.entries.map((e) => e.key);
+        }
+        if (resolved.kind === "union") {
+            // keyof (A | B) = keyof A & keyof B: keys present in every member.
+            // `open` (from an index signature) intersects away to nothing.
+            const per = resolved.members.map((m) => this.keyNamesOf(m, tok, file));
+            const concrete = per.filter((k): k is string[] => k !== "open");
+            if (concrete.length === 0) return "open";
+            return concrete.reduce((acc, list) =>
+                acc.filter((k) => list.includes(k))
+            );
+        }
+        throw this.fail("`keyof` requires an object type", file, tok);
+    }
+
+    // ---- indexed access `T[K]` / `T.member` --------------------------
+
+    /**
+     * `T[K]` — the type reached by indexing `T` with `K`. A union on either
+     * side distributes (`(A | B)[K]` -> `A[K] | B[K]`, `T["a" | "b"]` ->
+     * `T["a"] | T["b"]`). A string-literal key names a property (falling back
+     * to the index signature); a numeric key indexes a tuple or list;
+     * `number` / `string` keys index a list / index signature respectively.
+     * The property's optionality does not leak into the result.
+     */
+    private resolveIndex(
+        target: Type,
+        key: Type,
+        tok: Token,
+        file: string
+    ): Type {
+        const t = this.throughRefs(target, tok, file);
+        if (t.kind === "union") {
+            return this.normalizeUnion(
+                t.members.map((m) => this.resolveIndex(m, key, tok, file))
+            );
+        }
+
+        const k = this.throughRefs(key, tok, file);
+        if (k.kind === "union") {
+            return this.normalizeUnion(
+                k.members.map((m) => this.resolveIndex(t, m, tok, file))
+            );
+        }
+
+        if (k.kind === "literal" && typeof k.value === "string") {
+            return this.indexByName(t, k.value, tok, file);
+        }
+        if (k.kind === "literal" && typeof k.value === "number") {
+            return this.indexByOrdinal(t, k.value, tok, file);
+        }
+        if (k.kind === "primitive" && k.value === "number") {
+            return this.indexByNumber(t, tok, file);
+        }
+        if (k.kind === "primitive" && k.value === "string") {
+            if (t.kind === "object" && t.indexValue) return t.indexValue;
+            throw this.fail(
+                "a `string` index requires an object with an index signature",
+                file,
+                tok
+            );
+        }
+        throw this.fail("an index type must be a string or a number", file, tok);
+    }
+
+    private indexByName(t: Type, name: string, tok: Token, file: string): Type {
+        if (t.kind !== "object") {
+            throw this.fail(
+                `cannot index ${describe(t)} by property name`,
+                file,
+                tok
+            );
+        }
+        const entry = t.entries.find((e) => e.key === name);
+        if (entry) return entry.type;
+        if (t.indexValue) return t.indexValue;
+        throw this.fail(
+            `property "${name}" does not exist on the object`,
+            file,
+            tok
+        );
+    }
+
+    private indexByOrdinal(t: Type, n: number, tok: Token, file: string): Type {
+        if (t.kind !== "array") {
+            throw this.fail(`cannot index ${describe(t)} by position`, file, tok);
+        }
+        if (n >= 0 && n < t.prefix.length) return t.prefix[n]!;
+        if (t.items) return t.items;
+        throw this.fail(`no element at position ${n}`, file, tok);
+    }
+
+    private indexByNumber(t: Type, tok: Token, file: string): Type {
+        if (t.kind !== "array") {
+            throw this.fail(`cannot index ${describe(t)} by number`, file, tok);
+        }
+        if (t.prefix.length > 0) {
+            return this.normalizeUnion([
+                ...t.prefix,
+                ...(t.items ? [t.items] : []),
+            ]);
+        }
+        if (t.items) return t.items;
+        throw this.fail("cannot index an empty tuple by number", file, tok);
+    }
+
     private resolveObject(ctx: ObjectContext, file: string, env: Env): ObjectType {
+        // `{ [K in T]: V }` is a mapped type and must stand alone.
+        const mapped = ctx._items.find(
+            (p): p is TypePairContext => p instanceof TypePairContext
+        );
+        if (mapped) {
+            if (ctx._items.length !== 1) {
+                throw this.fail(
+                    "a mapped type must be the sole member of its object",
+                    file,
+                    mapped.start
+                );
+            }
+            return this.resolveMapped(mapped, file, env);
+        }
+
         const entries: ObjectEntry[] = [];
         const keys = new Set<string>();
+        const patternEntries: PatternEntry[] = [];
+        const patterns = new Set<string>();
         let indexValue: Type | null = null;
         const docFor = this.getModule(file).docFor;
 
@@ -331,11 +628,34 @@ export class SchemaBuilder {
             }
             if (pair instanceof PatternPairContext) {
                 if (pair._match) {
-                    throw this.fail(
-                        "pattern properties (`[k matches ...]`) are not supported",
-                        file,
-                        pair.start
+                    const match = this.throughRefs(
+                        this.resolveType(pair._match, file, env),
+                        pair.start,
+                        file
                     );
+                    if (match.kind !== "literal" || typeof match.value !== "string") {
+                        throw this.fail(
+                            "a pattern property key must evaluate to a string literal",
+                            file,
+                            pair.start
+                        );
+                    }
+                    if (patterns.has(match.value)) {
+                        throw this.fail(
+                            `duplicate pattern property: ${match.value}`,
+                            file,
+                            pair.start
+                        );
+                    }
+                    patterns.add(match.value);
+                    patternEntries.push({
+                        pattern: match.value,
+                        type: describedBy(
+                            this.resolveType(pair._val, file, env),
+                            docFor(pair.start)
+                        ),
+                    });
+                    continue;
                 }
                 if (indexValue) {
                     throw this.fail("multiple index signatures", file, pair.start);
@@ -343,17 +663,67 @@ export class SchemaBuilder {
                 indexValue = this.resolveType(pair._val, file, env);
                 continue;
             }
-            if (pair instanceof TypePairContext) {
-                throw this.fail(
-                    "mapped types (`[K in T]`) are not supported",
-                    file,
-                    pair.start
-                );
-            }
             throw this.fail("unsupported object member", file, pair.start);
         }
 
-        return { kind: "object", entries, indexValue, with: {} };
+        return { kind: "object", entries, indexValue, patternEntries, with: {} };
+    }
+
+    /**
+     * `{ [K in T]: V }` — `T` must be a finite set of string literals (given
+     * directly or via `keyof`); the result has one entry per literal, each
+     * typed by `V` with `K` bound to that literal. `?` makes every entry
+     * optional; without it they are all required.
+     */
+    private resolveMapped(
+        ctx: TypePairContext,
+        file: string,
+        env: Env
+    ): ObjectType {
+        const key = ctx._name.text;
+        const source = this.resolveType(ctx.type__list()[0]!, file, env);
+        const optional = !!ctx._opt;
+
+        const entries: ObjectEntry[] = [];
+        const seen = new Set<string>();
+        for (const lit of this.stringLiteralMembers(source, ctx.start, file)) {
+            if (seen.has(lit)) continue;
+            seen.add(lit);
+            const inner: Env = new Map(env);
+            inner.set(key, { kind: "literal", value: lit, with: {} });
+            entries.push({
+                key: lit,
+                type: this.resolveType(ctx._val, file, inner),
+                optional,
+            });
+        }
+        return {
+            kind: "object",
+            entries,
+            indexValue: null,
+            patternEntries: [],
+            with: {},
+        };
+    }
+
+    /** The string-literal members of a mapped-type source, or an error when it
+     *  is not a finite set of string literals (e.g. `keyof` of an object with
+     *  an index signature, which yields `string`). */
+    private stringLiteralMembers(t: Type, tok: Token, file: string): string[] {
+        const resolved = this.throughRefs(t, tok, file);
+        const members =
+            resolved.kind === "union" ? resolved.members : [resolved];
+        return members.map((m) => {
+            const lit = this.throughRefs(m, tok, file);
+            if (lit.kind !== "literal" || typeof lit.value !== "string") {
+                throw this.fail(
+                    "a mapped type source must be a finite set of string literals",
+                    file,
+                    tok
+                );
+            }
+            return lit.value;
+        });
     }
 
     private resolveTuple(ctx: TupleContext, file: string, env: Env): Type {
@@ -390,17 +760,21 @@ export class SchemaBuilder {
         return { kind: "array", prefix, items: rest, postfix: [], with: {} };
     }
 
-    private resolveNamed(ctx: NamedTypeContext, file: string, env: Env): Type {
+    private resolveNamed(
+        ctx: NamedTypeContext,
+        file: string,
+        env: Env
+    ): Resolved {
         const nameTok = ctx.ID().symbol;
         const name = nameTok.text;
 
         const gp: Generic_paramsContext | null = ctx.generic_params();
-        const args: Type[] = gp
-            ? gp._items.map((t) => this.resolveType(t, file, env))
+        const rawArgs: Resolved[] = gp
+            ? gp._items.map((t) => this.resolveInner(t, file, env))
             : [];
 
         if (env.has(name)) {
-            if (args.length > 0) {
+            if (rawArgs.length > 0) {
                 throw this.fail(
                     `type parameter ${name} cannot take type arguments`,
                     file,
@@ -410,6 +784,24 @@ export class SchemaBuilder {
             return env.get(name)!;
         }
 
+        // A generic-argument slot is a frame: `T<expand A | B>` -> `T<A> | T<B>`,
+        // and several `expand`s in one application multiply out.
+        const choices = rawArgs.map((a) => this.frameMembers(a, nameTok, file));
+        const combos = cartesianProduct(choices);
+        if (combos.length === 1) {
+            return this.instantiateNamed(file, name, combos[0]!, nameTok);
+        }
+        return this.normalizeUnion(
+            combos.map((args) => this.instantiateNamed(file, name, args, nameTok))
+        );
+    }
+
+    private instantiateNamed(
+        file: string,
+        name: string,
+        args: Type[],
+        nameTok: Token
+    ): RefType {
         const mod = this.getModule(file);
         if (mod.symbols.has(name)) {
             return this.reference(file, name, args, nameTok, false);
@@ -509,7 +901,22 @@ export class SchemaBuilder {
             ? this.normalizeUnion(objs.map((obj) => obj.indexValue!))
             : null;
 
-        return { kind: "object", entries, indexValue, with: {} };
+        // Keep a pattern only where every member declares it.
+        const patternEntries: PatternEntry[] = (objs[0]?.patternEntries ?? [])
+            .map((p) => p.pattern)
+            .filter((pat) =>
+                objs.every((obj) => obj.patternEntries.some((p) => p.pattern === pat))
+            )
+            .map((pat) => ({
+                pattern: pat,
+                type: this.normalizeUnion(
+                    objs.map(
+                        (obj) => obj.patternEntries.find((p) => p.pattern === pat)!.type
+                    )
+                ),
+            }));
+
+        return { kind: "object", entries, indexValue, patternEntries, with: {} };
     }
 
     private mergeObjects(
@@ -543,21 +950,38 @@ export class SchemaBuilder {
             indexValue = a.indexValue ?? b.indexValue;
         }
 
+        const patternEntries: PatternEntry[] = a.patternEntries.map((p) => ({ ...p }));
+        const patAt = new Map(patternEntries.map((p, i) => [p.pattern, i]));
+        for (const bp of b.patternEntries) {
+            const at = patAt.get(bp.pattern);
+            if (at === undefined) {
+                patAt.set(bp.pattern, patternEntries.length);
+                patternEntries.push({ ...bp });
+            } else {
+                patternEntries[at] = {
+                    pattern: bp.pattern,
+                    type: this.intersect(patternEntries[at]!.type, bp.type, tok, file),
+                };
+            }
+        }
+
         return {
             kind: "object",
             entries,
             indexValue,
+            patternEntries,
             with: { ...a.with, ...b.with },
         };
     }
 
-    /** Resolve a ref's body now, out of queue order, for an intersection. */
+    /** Resolve a ref's body now, out of queue order, for an operation that
+     *  needs it eagerly (`&`, `keyof`, `T[K]`, `expand`). */
     private bodyOf(ref: RefType, tok: Token, file: string): Type {
         const def = this.defs.get(ref.def)!;
         if (def.status === "done") return def.body!;
         if (this.resolvingBodies.has(def.id)) {
             throw this.fail(
-                "recursive type cannot be used in an intersection",
+                "a recursive type cannot be used here",
                 file,
                 tok
             );

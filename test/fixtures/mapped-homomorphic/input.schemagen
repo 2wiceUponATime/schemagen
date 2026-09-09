@@ -1,0 +1,17 @@
+Source = {
+    id: integer;
+    name: string;
+    active: boolean;
+};
+
+Clone = { [K in keyof Source]: Source[K] };
+Stringify = { [K in keyof Source]: string };
+OptionalClone = { [K in keyof Source]?: Source[K] };
+
+Root = {
+    clone: Clone;
+    stringify: Stringify;
+    optionalClone: OptionalClone;
+};
+
+export Root;

@@ -1,0 +1,15 @@
+A = { kind: "a"; a: string };
+B = { kind: "b"; b: integer };
+C = { c: boolean };
+D = { d: string };
+
+Both = "x" | "y";
+Wrap<T> = { tag: T };
+
+Root = {
+    intersection: expand (A | B) & C;
+    generic: Wrap<expand Both>;
+    cartesian: expand (A | B) & expand (C | D);
+};
+
+export Root;

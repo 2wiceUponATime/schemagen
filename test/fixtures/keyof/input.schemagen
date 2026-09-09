@@ -1,0 +1,13 @@
+Obj = { a: string; b: integer; c: boolean };
+Single = { only: string };
+Open = { known: string; [k]: integer };
+Variants = { tag: string } | { tag: string; extra: integer };
+
+Root = {
+    all: keyof Obj;
+    one: keyof Single;
+    open: keyof Open;
+    common: keyof Variants;
+};
+
+export Root;

@@ -1,0 +1,1 @@
+a mapped type must be the sole member of its object

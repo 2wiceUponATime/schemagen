@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Root",
+  "$defs": {
+    "Flags": {
+      "type": "object",
+      "properties": {
+        "read": {
+          "type": "boolean"
+        },
+        "write": {
+          "type": "boolean"
+        },
+        "admin": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "read",
+        "write",
+        "admin"
+      ],
+      "additionalProperties": false
+    },
+    "Keys": {
+      "enum": [
+        "read",
+        "write",
+        "admin"
+      ]
+    },
+    "Partial": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "string"
+        },
+        "b": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Root": {
+      "type": "object",
+      "properties": {
+        "flags": {
+          "$ref": "#/$defs/Flags"
+        },
+        "partial": {
+          "$ref": "#/$defs/Partial"
+        },
+        "single": {
+          "$ref": "#/$defs/Single"
+        }
+      },
+      "required": [
+        "flags",
+        "partial",
+        "single"
+      ],
+      "additionalProperties": false
+    },
+    "Single": {
+      "type": "object",
+      "properties": {
+        "only": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "only"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

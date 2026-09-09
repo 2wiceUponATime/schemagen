@@ -1,0 +1,20 @@
+Prefix = "^data-";
+
+Config = {
+    name: string;
+    version?: integer;
+    [k matches Prefix]: string;
+    [k matches "_id$"]: integer;
+};
+
+Loose = {
+    [k matches "^x"]: boolean;
+    [k]: string;
+};
+
+Root = {
+    config: Config;
+    loose: Loose;
+};
+
+export Root;

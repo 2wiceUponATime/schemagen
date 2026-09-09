@@ -51,7 +51,7 @@ type
     | ID ('<' generic_params '>')?                   # NamedType
     | '(' type ')'                                   # Parens
     | type '[' ']'                                   # List
-    | val=type '[' expand=EXPAND? key=type ']'       # Index
+    | val=type '[' key=type ']'                      # Index
     | type '.' member=ID                             # Subscript
     | type 'with' json_object                        # With
     | KEYOF type                                     # Keyof
@@ -67,7 +67,7 @@ tuple_item
 
 pair
     : key=(ID | STRING) optional='?'?         ':' val=type # StringPair
-    | '[' name=ID 'in' type ']'               ':' val=type # TypePair
+    | '[' name=ID 'in' type ']' opt='?'?      ':' val=type # TypePair
     | '[' name=ID ('matches' match=type)? ']' ':' val=type # PatternPair;
 
 json_value

@@ -617,9 +617,9 @@ export default class ProgramParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			this._ctx.stop = this._input.LT(-1);
-			this.state = 154;
+			this.state = 151;
 			this._errHandler.sync(this);
-			_alt = this._interp.adaptivePredict(this._input, 18, this._ctx);
+			_alt = this._interp.adaptivePredict(this._input, 17, this._ctx);
 			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
 				if (_alt === 1) {
 					if (this._parseListeners != null) {
@@ -627,9 +627,9 @@ export default class ProgramParser extends Parser {
 					}
 					_prevctx = localctx;
 					{
-					this.state = 152;
+					this.state = 149;
 					this._errHandler.sync(this);
-					switch ( this._interp.adaptivePredict(this._input, 17, this._ctx) ) {
+					switch ( this._interp.adaptivePredict(this._input, 16, this._ctx) ) {
 					case 1:
 						{
 						localctx = new IntersectionContext(this, new TypeContext(this, _parentctx, _parentState));
@@ -685,19 +685,9 @@ export default class ProgramParser extends Parser {
 						}
 						this.state = 139;
 						this.match(ProgramParser.T__10);
-						this.state = 141;
-						this._errHandler.sync(this);
-						switch ( this._interp.adaptivePredict(this._input, 16, this._ctx) ) {
-						case 1:
-							{
-							this.state = 140;
-							(localctx as IndexContext)._expand = this.match(ProgramParser.EXPAND);
-							}
-							break;
-						}
-						this.state = 143;
+						this.state = 140;
 						(localctx as IndexContext)._key = this.type_(0);
-						this.state = 144;
+						this.state = 141;
 						this.match(ProgramParser.T__11);
 						}
 						break;
@@ -705,13 +695,13 @@ export default class ProgramParser extends Parser {
 						{
 						localctx = new SubscriptContext(this, new TypeContext(this, _parentctx, _parentState));
 						this.pushNewRecursionContext(localctx, _startState, ProgramParser.RULE_type);
-						this.state = 146;
+						this.state = 143;
 						if (!(this.precpred(this._ctx, 6))) {
 							throw this.createFailedPredicateException("this.precpred(this._ctx, 6)");
 						}
-						this.state = 147;
+						this.state = 144;
 						this.match(ProgramParser.T__12);
-						this.state = 148;
+						this.state = 145;
 						(localctx as SubscriptContext)._member = this.match(ProgramParser.ID);
 						}
 						break;
@@ -719,22 +709,22 @@ export default class ProgramParser extends Parser {
 						{
 						localctx = new WithContext(this, new TypeContext(this, _parentctx, _parentState));
 						this.pushNewRecursionContext(localctx, _startState, ProgramParser.RULE_type);
-						this.state = 149;
+						this.state = 146;
 						if (!(this.precpred(this._ctx, 5))) {
 							throw this.createFailedPredicateException("this.precpred(this._ctx, 5)");
 						}
-						this.state = 150;
+						this.state = 147;
 						this.match(ProgramParser.T__13);
-						this.state = 151;
+						this.state = 148;
 						this.json_object();
 						}
 						break;
 					}
 					}
 				}
-				this.state = 156;
+				this.state = 153;
 				this._errHandler.sync(this);
-				_alt = this._interp.adaptivePredict(this._input, 18, this._ctx);
+				_alt = this._interp.adaptivePredict(this._input, 17, this._ctx);
 			}
 			}
 		}
@@ -761,41 +751,41 @@ export default class ProgramParser extends Parser {
 			let _alt: number;
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 157;
+			this.state = 154;
 			this.match(ProgramParser.T__10);
-			this.state = 169;
+			this.state = 166;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (((((_la - 6)) & ~0x1F) === 0 && ((1 << (_la - 6)) & 261621801) !== 0)) {
 				{
-				this.state = 158;
+				this.state = 155;
 				localctx._tuple_item = this.tuple_item();
 				localctx._items.push(localctx._tuple_item);
-				this.state = 163;
+				this.state = 160;
 				this._errHandler.sync(this);
-				_alt = this._interp.adaptivePredict(this._input, 19, this._ctx);
+				_alt = this._interp.adaptivePredict(this._input, 18, this._ctx);
 				while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
 					if (_alt === 1) {
 						{
 						{
-						this.state = 159;
+						this.state = 156;
 						this.match(ProgramParser.T__2);
-						this.state = 160;
+						this.state = 157;
 						localctx._tuple_item = this.tuple_item();
 						localctx._items.push(localctx._tuple_item);
 						}
 						}
 					}
-					this.state = 165;
+					this.state = 162;
 					this._errHandler.sync(this);
-					_alt = this._interp.adaptivePredict(this._input, 19, this._ctx);
+					_alt = this._interp.adaptivePredict(this._input, 18, this._ctx);
 				}
-				this.state = 167;
+				this.state = 164;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la===3) {
 					{
-					this.state = 166;
+					this.state = 163;
 					this.match(ProgramParser.T__2);
 					}
 				}
@@ -803,7 +793,7 @@ export default class ProgramParser extends Parser {
 				}
 			}
 
-			this.state = 171;
+			this.state = 168;
 			this.match(ProgramParser.T__11);
 			}
 		}
@@ -826,7 +816,7 @@ export default class ProgramParser extends Parser {
 		let localctx: Tuple_itemContext = new Tuple_itemContext(this, this._ctx, this.state);
 		this.enterRule(localctx, 14, ProgramParser.RULE_tuple_item);
 		try {
-			this.state = 176;
+			this.state = 173;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case 6:
@@ -842,7 +832,7 @@ export default class ProgramParser extends Parser {
 				localctx = new ItemContext(this, localctx);
 				this.enterOuterAlt(localctx, 1);
 				{
-				this.state = 173;
+				this.state = 170;
 				this.type_(0);
 				}
 				break;
@@ -850,9 +840,9 @@ export default class ProgramParser extends Parser {
 				localctx = new RestContext(this, localctx);
 				this.enterOuterAlt(localctx, 2);
 				{
-				this.state = 174;
+				this.state = 171;
 				this.match(ProgramParser.T__16);
-				this.state = 175;
+				this.state = 172;
 				this.type_(0);
 				}
 				break;
@@ -887,7 +877,7 @@ export default class ProgramParser extends Parser {
 				localctx = new StringPairContext(this, localctx);
 				this.enterOuterAlt(localctx, 1);
 				{
-				this.state = 178;
+				this.state = 175;
 				(localctx as StringPairContext)._key = this._input.LT(1);
 				_la = this._input.LA(1);
 				if(!(_la===32 || _la===33)) {
@@ -897,19 +887,19 @@ export default class ProgramParser extends Parser {
 					this._errHandler.reportMatch(this);
 				    this.consume();
 				}
-				this.state = 180;
+				this.state = 177;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la===18) {
 					{
-					this.state = 179;
+					this.state = 176;
 					(localctx as StringPairContext)._optional = this.match(ProgramParser.T__17);
 					}
 				}
 
-				this.state = 182;
+				this.state = 179;
 				this.match(ProgramParser.T__18);
-				this.state = 183;
+				this.state = 180;
 				(localctx as StringPairContext)._val = this.type_(0);
 				}
 				break;
@@ -917,16 +907,26 @@ export default class ProgramParser extends Parser {
 				localctx = new TypePairContext(this, localctx);
 				this.enterOuterAlt(localctx, 2);
 				{
-				this.state = 184;
+				this.state = 181;
 				this.match(ProgramParser.T__10);
-				this.state = 185;
+				this.state = 182;
 				(localctx as TypePairContext)._name = this.match(ProgramParser.ID);
-				this.state = 186;
+				this.state = 183;
 				this.match(ProgramParser.T__19);
-				this.state = 187;
+				this.state = 184;
 				this.type_(0);
-				this.state = 188;
+				this.state = 185;
 				this.match(ProgramParser.T__11);
+				this.state = 187;
+				this._errHandler.sync(this);
+				_la = this._input.LA(1);
+				if (_la===18) {
+					{
+					this.state = 186;
+					(localctx as TypePairContext)._opt = this.match(ProgramParser.T__17);
+					}
+				}
+
 				this.state = 189;
 				this.match(ProgramParser.T__18);
 				this.state = 190;
@@ -1246,17 +1246,17 @@ export default class ProgramParser extends Parser {
 	1,3,1,3,3,3,83,8,3,1,4,1,4,1,4,5,4,88,8,4,10,4,12,4,91,9,4,1,5,1,5,1,5,
 	1,5,1,5,1,5,1,5,1,5,5,5,101,8,5,10,5,12,5,104,9,5,1,5,3,5,107,8,5,3,5,109,
 	8,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,3,5,118,8,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,
-	1,5,3,5,128,8,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,3,5,142,
-	8,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,5,5,153,8,5,10,5,12,5,156,9,5,1,
-	6,1,6,1,6,1,6,5,6,162,8,6,10,6,12,6,165,9,6,1,6,3,6,168,8,6,3,6,170,8,6,
-	1,6,1,6,1,7,1,7,1,7,3,7,177,8,7,1,8,1,8,3,8,181,8,8,1,8,1,8,1,8,1,8,1,8,
-	1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,3,8,197,8,8,1,8,1,8,1,8,3,8,202,8,8,
+	1,5,3,5,128,8,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,
+	1,5,1,5,1,5,1,5,1,5,1,5,5,5,150,8,5,10,5,12,5,153,9,5,1,6,1,6,1,6,1,6,5,
+	6,159,8,6,10,6,12,6,162,9,6,1,6,3,6,165,8,6,3,6,167,8,6,1,6,1,6,1,7,1,7,
+	1,7,3,7,174,8,7,1,8,1,8,3,8,178,8,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,3,8,
+	188,8,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,3,8,197,8,8,1,8,1,8,1,8,3,8,202,8,8,
 	1,9,1,9,1,9,1,9,1,9,1,9,3,9,210,8,9,1,10,1,10,1,10,1,10,5,10,216,8,10,10,
 	10,12,10,219,9,10,1,10,1,10,1,11,1,11,1,11,1,11,1,12,1,12,1,12,1,12,5,12,
 	231,8,12,10,12,12,12,234,9,12,1,12,3,12,237,8,12,3,12,239,8,12,1,12,1,12,
 	1,12,0,1,10,13,0,2,4,6,8,10,12,14,16,18,20,22,24,0,3,1,0,29,30,1,0,32,33,
 	1,0,22,23,277,0,32,1,0,0,0,2,62,1,0,0,0,4,77,1,0,0,0,6,79,1,0,0,0,8,84,
-	1,0,0,0,10,127,1,0,0,0,12,157,1,0,0,0,14,176,1,0,0,0,16,201,1,0,0,0,18,
+	1,0,0,0,10,127,1,0,0,0,12,154,1,0,0,0,14,173,1,0,0,0,16,201,1,0,0,0,18,
 	209,1,0,0,0,20,211,1,0,0,0,22,222,1,0,0,0,24,226,1,0,0,0,26,28,3,2,1,0,
 	27,29,5,1,0,0,28,27,1,0,0,0,28,29,1,0,0,0,29,31,1,0,0,0,30,26,1,0,0,0,31,
 	34,1,0,0,0,32,30,1,0,0,0,32,33,1,0,0,0,33,35,1,0,0,0,34,32,1,0,0,0,35,36,
@@ -1283,40 +1283,40 @@ export default class ProgramParser extends Parser {
 	5,9,0,0,120,121,3,10,5,0,121,122,5,10,0,0,122,128,1,0,0,0,123,124,5,26,
 	0,0,124,128,3,10,5,4,125,126,5,25,0,0,126,128,3,10,5,3,127,92,1,0,0,0,127,
 	94,1,0,0,0,127,95,1,0,0,0,127,96,1,0,0,0,127,111,1,0,0,0,127,112,1,0,0,
-	0,127,119,1,0,0,0,127,123,1,0,0,0,127,125,1,0,0,0,128,154,1,0,0,0,129,130,
-	10,2,0,0,130,131,5,15,0,0,131,153,3,10,5,3,132,133,10,1,0,0,133,134,5,16,
-	0,0,134,153,3,10,5,2,135,136,10,8,0,0,136,137,5,11,0,0,137,153,5,12,0,0,
-	138,139,10,7,0,0,139,141,5,11,0,0,140,142,5,25,0,0,141,140,1,0,0,0,141,
-	142,1,0,0,0,142,143,1,0,0,0,143,144,3,10,5,0,144,145,5,12,0,0,145,153,1,
-	0,0,0,146,147,10,6,0,0,147,148,5,13,0,0,148,153,5,32,0,0,149,150,10,5,0,
-	0,150,151,5,14,0,0,151,153,3,20,10,0,152,129,1,0,0,0,152,132,1,0,0,0,152,
-	135,1,0,0,0,152,138,1,0,0,0,152,146,1,0,0,0,152,149,1,0,0,0,153,156,1,0,
-	0,0,154,152,1,0,0,0,154,155,1,0,0,0,155,11,1,0,0,0,156,154,1,0,0,0,157,
-	169,5,11,0,0,158,163,3,14,7,0,159,160,5,3,0,0,160,162,3,14,7,0,161,159,
-	1,0,0,0,162,165,1,0,0,0,163,161,1,0,0,0,163,164,1,0,0,0,164,167,1,0,0,0,
-	165,163,1,0,0,0,166,168,5,3,0,0,167,166,1,0,0,0,167,168,1,0,0,0,168,170,
-	1,0,0,0,169,158,1,0,0,0,169,170,1,0,0,0,170,171,1,0,0,0,171,172,5,12,0,
-	0,172,13,1,0,0,0,173,177,3,10,5,0,174,175,5,17,0,0,175,177,3,10,5,0,176,
-	173,1,0,0,0,176,174,1,0,0,0,177,15,1,0,0,0,178,180,7,1,0,0,179,181,5,18,
-	0,0,180,179,1,0,0,0,180,181,1,0,0,0,181,182,1,0,0,0,182,183,5,19,0,0,183,
-	202,3,10,5,0,184,185,5,11,0,0,185,186,5,32,0,0,186,187,5,20,0,0,187,188,
-	3,10,5,0,188,189,5,12,0,0,189,190,5,19,0,0,190,191,3,10,5,0,191,202,1,0,
-	0,0,192,193,5,11,0,0,193,196,5,32,0,0,194,195,5,21,0,0,195,197,3,10,5,0,
-	196,194,1,0,0,0,196,197,1,0,0,0,197,198,1,0,0,0,198,199,5,12,0,0,199,200,
-	5,19,0,0,200,202,3,10,5,0,201,178,1,0,0,0,201,184,1,0,0,0,201,192,1,0,0,
-	0,202,17,1,0,0,0,203,210,5,33,0,0,204,210,5,31,0,0,205,210,3,20,10,0,206,
-	210,3,24,12,0,207,210,7,2,0,0,208,210,5,29,0,0,209,203,1,0,0,0,209,204,
-	1,0,0,0,209,205,1,0,0,0,209,206,1,0,0,0,209,207,1,0,0,0,209,208,1,0,0,0,
-	210,19,1,0,0,0,211,212,5,6,0,0,212,217,3,22,11,0,213,214,5,1,0,0,214,216,
-	3,22,11,0,215,213,1,0,0,0,216,219,1,0,0,0,217,215,1,0,0,0,217,218,1,0,0,
-	0,218,220,1,0,0,0,219,217,1,0,0,0,220,221,5,7,0,0,221,21,1,0,0,0,222,223,
-	7,1,0,0,223,224,5,19,0,0,224,225,3,18,9,0,225,23,1,0,0,0,226,238,5,11,0,
-	0,227,232,3,18,9,0,228,229,5,3,0,0,229,231,3,18,9,0,230,228,1,0,0,0,231,
-	234,1,0,0,0,232,230,1,0,0,0,232,233,1,0,0,0,233,236,1,0,0,0,234,232,1,0,
-	0,0,235,237,5,3,0,0,236,235,1,0,0,0,236,237,1,0,0,0,237,239,1,0,0,0,238,
-	227,1,0,0,0,238,239,1,0,0,0,239,240,1,0,0,0,240,241,5,12,0,0,241,25,1,0,
-	0,0,31,28,32,38,47,51,62,71,74,77,82,89,102,106,108,117,127,141,152,154,
-	163,167,169,176,180,196,201,209,217,232,236,238];
+	0,127,119,1,0,0,0,127,123,1,0,0,0,127,125,1,0,0,0,128,151,1,0,0,0,129,130,
+	10,2,0,0,130,131,5,15,0,0,131,150,3,10,5,3,132,133,10,1,0,0,133,134,5,16,
+	0,0,134,150,3,10,5,2,135,136,10,8,0,0,136,137,5,11,0,0,137,150,5,12,0,0,
+	138,139,10,7,0,0,139,140,5,11,0,0,140,141,3,10,5,0,141,142,5,12,0,0,142,
+	150,1,0,0,0,143,144,10,6,0,0,144,145,5,13,0,0,145,150,5,32,0,0,146,147,
+	10,5,0,0,147,148,5,14,0,0,148,150,3,20,10,0,149,129,1,0,0,0,149,132,1,0,
+	0,0,149,135,1,0,0,0,149,138,1,0,0,0,149,143,1,0,0,0,149,146,1,0,0,0,150,
+	153,1,0,0,0,151,149,1,0,0,0,151,152,1,0,0,0,152,11,1,0,0,0,153,151,1,0,
+	0,0,154,166,5,11,0,0,155,160,3,14,7,0,156,157,5,3,0,0,157,159,3,14,7,0,
+	158,156,1,0,0,0,159,162,1,0,0,0,160,158,1,0,0,0,160,161,1,0,0,0,161,164,
+	1,0,0,0,162,160,1,0,0,0,163,165,5,3,0,0,164,163,1,0,0,0,164,165,1,0,0,0,
+	165,167,1,0,0,0,166,155,1,0,0,0,166,167,1,0,0,0,167,168,1,0,0,0,168,169,
+	5,12,0,0,169,13,1,0,0,0,170,174,3,10,5,0,171,172,5,17,0,0,172,174,3,10,
+	5,0,173,170,1,0,0,0,173,171,1,0,0,0,174,15,1,0,0,0,175,177,7,1,0,0,176,
+	178,5,18,0,0,177,176,1,0,0,0,177,178,1,0,0,0,178,179,1,0,0,0,179,180,5,
+	19,0,0,180,202,3,10,5,0,181,182,5,11,0,0,182,183,5,32,0,0,183,184,5,20,
+	0,0,184,185,3,10,5,0,185,187,5,12,0,0,186,188,5,18,0,0,187,186,1,0,0,0,
+	187,188,1,0,0,0,188,189,1,0,0,0,189,190,5,19,0,0,190,191,3,10,5,0,191,202,
+	1,0,0,0,192,193,5,11,0,0,193,196,5,32,0,0,194,195,5,21,0,0,195,197,3,10,
+	5,0,196,194,1,0,0,0,196,197,1,0,0,0,197,198,1,0,0,0,198,199,5,12,0,0,199,
+	200,5,19,0,0,200,202,3,10,5,0,201,175,1,0,0,0,201,181,1,0,0,0,201,192,1,
+	0,0,0,202,17,1,0,0,0,203,210,5,33,0,0,204,210,5,31,0,0,205,210,3,20,10,
+	0,206,210,3,24,12,0,207,210,7,2,0,0,208,210,5,29,0,0,209,203,1,0,0,0,209,
+	204,1,0,0,0,209,205,1,0,0,0,209,206,1,0,0,0,209,207,1,0,0,0,209,208,1,0,
+	0,0,210,19,1,0,0,0,211,212,5,6,0,0,212,217,3,22,11,0,213,214,5,1,0,0,214,
+	216,3,22,11,0,215,213,1,0,0,0,216,219,1,0,0,0,217,215,1,0,0,0,217,218,1,
+	0,0,0,218,220,1,0,0,0,219,217,1,0,0,0,220,221,5,7,0,0,221,21,1,0,0,0,222,
+	223,7,1,0,0,223,224,5,19,0,0,224,225,3,18,9,0,225,23,1,0,0,0,226,238,5,
+	11,0,0,227,232,3,18,9,0,228,229,5,3,0,0,229,231,3,18,9,0,230,228,1,0,0,
+	0,231,234,1,0,0,0,232,230,1,0,0,0,232,233,1,0,0,0,233,236,1,0,0,0,234,232,
+	1,0,0,0,235,237,5,3,0,0,236,235,1,0,0,0,236,237,1,0,0,0,237,239,1,0,0,0,
+	238,227,1,0,0,0,238,239,1,0,0,0,239,240,1,0,0,0,240,241,5,12,0,0,241,25,
+	1,0,0,0,31,28,32,38,47,51,62,71,74,77,82,89,102,106,108,117,127,149,151,
+	160,164,166,173,177,187,196,201,209,217,232,236,238];
 
 	private static __ATN: ATN;
 	public static get _ATN(): ATN {
@@ -1681,7 +1681,6 @@ export class KeyofContext extends TypeContext {
 }
 export class IndexContext extends TypeContext {
 	public _val!: TypeContext;
-	public _expand!: Token;
 	public _key!: TypeContext;
 	constructor(parser: ProgramParser, ctx: TypeContext) {
 		super(parser, ctx.parentCtx, ctx.invokingState);
@@ -1692,9 +1691,6 @@ export class IndexContext extends TypeContext {
 	}
 	public type_(i: number): TypeContext {
 		return this.getTypedRuleContext(TypeContext, i) as TypeContext;
-	}
-	public EXPAND(): TerminalNode {
-		return this.getToken(ProgramParser.EXPAND, 0);
 	}
 	public enterRule(listener: ProgramListener): void {
 	    if(listener.enterIndex) {
@@ -2076,6 +2072,7 @@ export class StringPairContext extends PairContext {
 }
 export class TypePairContext extends PairContext {
 	public _name!: Token;
+	public _opt!: Token;
 	public _val!: TypeContext;
 	constructor(parser: ProgramParser, ctx: PairContext) {
 		super(parser, ctx.parentCtx, ctx.invokingState);

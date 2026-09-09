@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Root",
+  "$defs": {
+    "A": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "a"
+        },
+        "a": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "a"
+      ],
+      "additionalProperties": false
+    },
+    "B": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "b"
+        },
+        "b": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "b"
+      ],
+      "additionalProperties": false
+    },
+    "Both": {
+      "enum": [
+        "x",
+        "y"
+      ]
+    },
+    "C": {
+      "type": "object",
+      "properties": {
+        "c": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "c"
+      ],
+      "additionalProperties": false
+    },
+    "D": {
+      "type": "object",
+      "properties": {
+        "d": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "d"
+      ],
+      "additionalProperties": false
+    },
+    "Root": {
+      "type": "object",
+      "properties": {
+        "intersection": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "a"
+                },
+                "a": {
+                  "type": "string"
+                },
+                "c": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "kind",
+                "a",
+                "c"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "b"
+                },
+                "b": {
+                  "type": "integer"
+                },
+                "c": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "kind",
+                "b",
+                "c"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "generic": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Wrap"
+            },
+            {
+              "$ref": "#/$defs/Wrap_2"
+            }
+          ]
+        },
+        "cartesian": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "a"
+                },
+                "a": {
+                  "type": "string"
+                },
+                "c": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "kind",
+                "a",
+                "c"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "a"
+                },
+                "a": {
+                  "type": "string"
+                },
+                "d": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind",
+                "a",
+                "d"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "b"
+                },
+                "b": {
+                  "type": "integer"
+                },
+                "c": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "kind",
+                "b",
+                "c"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "b"
+                },
+                "b": {
+                  "type": "integer"
+                },
+                "d": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind",
+                "b",
+                "d"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": [
+        "intersection",
+        "generic",
+        "cartesian"
+      ],
+      "additionalProperties": false
+    },
+    "Wrap": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "const": "x"
+        }
+      },
+      "required": [
+        "tag"
+      ],
+      "additionalProperties": false
+    },
+    "Wrap_2": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "const": "y"
+        }
+      },
+      "required": [
+        "tag"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

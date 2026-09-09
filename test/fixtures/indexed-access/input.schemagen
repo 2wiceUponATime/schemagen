@@ -1,0 +1,17 @@
+Obj = { a: string; b: integer; c: boolean };
+Tuple = [string, integer, boolean];
+Dict = { label: string; [k]: integer };
+
+Root = {
+    byLiteral: Obj["a"];
+    byMember: Obj.b;
+    byKeyof: Obj[keyof Obj];
+    byUnionKey: Obj["a" | "b"];
+    tupleSlot: Tuple[1];
+    tupleAny: Tuple[number];
+    listElem: string[][number];
+    dictFallback: Dict["missing"];
+    dictString: Dict[string];
+};
+
+export Root;

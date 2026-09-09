@@ -35,6 +35,7 @@ const KEY_ORDER = [
     "maxItems",
     "properties",
     "required",
+    "patternProperties",
     "additionalProperties",
 ];
 
@@ -130,6 +131,13 @@ function emitType(t: Type, slugs: Map<DefId, string>): JSONObject {
             }
             schema = { type: "object", properties };
             if (required.length > 0) schema.required = required;
+            if (t.patternEntries.length > 0) {
+                const patternProperties: JSONObject = {};
+                for (const pe of t.patternEntries) {
+                    patternProperties[pe.pattern] = emitType(pe.type, slugs);
+                }
+                schema.patternProperties = patternProperties;
+            }
             schema.additionalProperties = t.indexValue
                 ? emitType(t.indexValue, slugs)
                 : false;

@@ -1,0 +1,2 @@
+Obj = { a: string };
+export Obj["b"];

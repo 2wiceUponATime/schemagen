@@ -1,0 +1,13 @@
+Keys = "read" | "write" | "admin";
+
+Flags = { [K in Keys]: boolean };
+Partial = { [K in "a" | "b"]?: string };
+Single = { [K in "only"]: integer };
+
+Root = {
+    flags: Flags;
+    partial: Partial;
+    single: Single;
+};
+
+export Root;

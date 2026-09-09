@@ -1,6 +1,0 @@
-A = { x: string };
-B = { y: integer };
-
-Bad = A & expand B;
-
-export Bad;

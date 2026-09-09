@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Root",
+  "$defs": {
+    "Clone": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "active"
+      ],
+      "additionalProperties": false
+    },
+    "OptionalClone": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Root": {
+      "type": "object",
+      "properties": {
+        "clone": {
+          "$ref": "#/$defs/Clone"
+        },
+        "stringify": {
+          "$ref": "#/$defs/Stringify"
+        },
+        "optionalClone": {
+          "$ref": "#/$defs/OptionalClone"
+        }
+      },
+      "required": [
+        "clone",
+        "stringify",
+        "optionalClone"
+      ],
+      "additionalProperties": false
+    },
+    "Source": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "active"
+      ],
+      "additionalProperties": false
+    },
+    "Stringify": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "active"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

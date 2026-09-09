@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Root",
+  "$defs": {
+    "Obj": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "string"
+        },
+        "b": {
+          "type": "integer"
+        },
+        "c": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "a",
+        "b",
+        "c"
+      ],
+      "additionalProperties": false
+    },
+    "Open": {
+      "type": "object",
+      "properties": {
+        "known": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "known"
+      ],
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "Root": {
+      "type": "object",
+      "properties": {
+        "all": {
+          "enum": [
+            "a",
+            "b",
+            "c"
+          ]
+        },
+        "one": {
+          "const": "only"
+        },
+        "open": {
+          "type": "string"
+        },
+        "common": {
+          "const": "tag"
+        }
+      },
+      "required": [
+        "all",
+        "one",
+        "open",
+        "common"
+      ],
+      "additionalProperties": false
+    },
+    "Single": {
+      "type": "object",
+      "properties": {
+        "only": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "only"
+      ],
+      "additionalProperties": false
+    },
+    "Variants": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "tag"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "string"
+            },
+            "extra": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "tag",
+            "extra"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

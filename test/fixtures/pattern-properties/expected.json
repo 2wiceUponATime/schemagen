@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/Root",
+  "$defs": {
+    "Config": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "patternProperties": {
+        "^data-": {
+          "type": "string"
+        },
+        "_id$": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Loose": {
+      "type": "object",
+      "properties": {},
+      "patternProperties": {
+        "^x": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "Prefix": {
+      "const": "^data-"
+    },
+    "Root": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "$ref": "#/$defs/Config"
+        },
+        "loose": {
+          "$ref": "#/$defs/Loose"
+        }
+      },
+      "required": [
+        "config",
+        "loose"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
